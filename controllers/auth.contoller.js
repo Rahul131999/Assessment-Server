@@ -11,12 +11,13 @@ export const googleAuth = async (req, res) => {
 
     if (validUser) {
 
-      const { password: pass, ...safeUser } = validUser._doc;
+      let { password: pass, ...safeUser } = validUser._doc;
 
       const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
 
+      safeUser = {...safeUser, token}
+
       res
-        .cookie("access_token", token, { httpOnly: true })
         .status(200)
         .json(safeUser);
     } else {
@@ -31,12 +32,13 @@ export const googleAuth = async (req, res) => {
 
       await user.save()
 
-      const { password: pass, ...safeUser } = user._doc;
+      let { password: pass, ...safeUser } = user._doc;
 
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
+      safeUser = {...safeUser, token}
+
       res
-        .cookie("access_token", token, { httpOnly: true })
         .status(200)
         .json(safeUser);
 
